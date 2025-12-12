@@ -5,8 +5,14 @@ import '../models/category.dart';
 class CategoryCard extends StatelessWidget {
   final Category category;
   final VoidCallback? onTap;
+  final VoidCallback? onFavoriteToggle; // callback за toggle на омилен
 
-  const CategoryCard({super.key, required this.category, this.onTap});
+  const CategoryCard({
+    super.key,
+    required this.category,
+    this.onTap,
+    this.onFavoriteToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +25,7 @@ class CategoryCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Слика
             Expanded(
               flex: 6,
               child: ClipRRect(
@@ -31,6 +38,7 @@ class CategoryCard extends StatelessWidget {
                 ),
               ),
             ),
+            // Текст и икона
             Expanded(
               flex: 4,
               child: Padding(
@@ -38,7 +46,28 @@ class CategoryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(category.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            category.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            category.isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                          onPressed: onFavoriteToggle,
+                          iconSize: 24,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+
+                      ],
+                    ),
                     const SizedBox(height: 6),
                     Expanded(
                       child: Text(

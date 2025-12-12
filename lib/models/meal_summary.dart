@@ -1,12 +1,15 @@
+
 class MealSummary {
   final String id;
   final String name;
   final String thumb;
+  bool isFavorite;
 
   MealSummary({
     required this.id,
     required this.name,
     required this.thumb,
+    this.isFavorite = false, // подразбирано не е омилен
   });
 
   factory MealSummary.fromJson(Map<String, dynamic> json) {
@@ -14,6 +17,7 @@ class MealSummary {
       id: json['idMeal'] ?? '',
       name: json['strMeal'] ?? '',
       thumb: json['strMealThumb'] ?? '',
+      isFavorite: false,
     );
   }
 
@@ -23,6 +27,7 @@ class MealSummary {
       id: json['idMeal'] ?? '',
       name: json['strMeal'] ?? '',
       thumb: json['strMealThumb'] ?? '',
+      isFavorite: false
     );
   }
 }

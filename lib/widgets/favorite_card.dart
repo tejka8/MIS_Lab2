@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../models/meal_summary.dart';
+import '../models/recepie.dart';
 
-class MealCard extends StatelessWidget {
-  final MealSummary meal;
+class RecipeCard extends StatelessWidget {
+  final Recipe recipe;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
 
-  const MealCard({
+  const RecipeCard({
     super.key,
-    required this.meal,
+    required this.recipe,
     this.onTap,
     this.onFavoriteToggle,
   });
@@ -27,15 +27,7 @@ class MealCard extends StatelessWidget {
               flex: 6,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                child: Image.network(
-                  meal.thumb,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) {
-                    if (progress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
-                ),
+                child: Image.network(recipe.imageUrl, fit: BoxFit.cover),
               ),
             ),
             Expanded(
@@ -47,13 +39,12 @@ class MealCard extends StatelessWidget {
                   children: [
                     Expanded(
                         child: Text(
-                          meal.name,
+                          recipe.title,
                           style: const TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
                         )),
                     IconButton(
                       icon: Icon(
-                        meal.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        recipe.isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: Colors.red,
                       ),
                       onPressed: onFavoriteToggle,

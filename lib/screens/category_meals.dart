@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:lab2_223095/screens/favorite_screen.dart';
 import '../models/meal_summary.dart';
 import '../services/api_services.dart';
 import '../widgets/meal_card.dart';
 import 'meal_details.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   final String categoryName;
@@ -25,6 +25,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   @override
   void initState() {
     super.initState();
+
     _futureMeals = api.fetchMealsByCategory(widget.categoryName);
     _futureMeals.then((list) {
       setState(() {
@@ -32,12 +33,32 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
         _displayed = list;
       });
     }).catchError((e) {});
+    // Firebase Messaging listener
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text(message.notification!.title ?? ""),
+            content: Text(message.notification!.body ?? ""),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    });
   }
+
 
   void _filterLocal(String q) {
     final qLower = q.toLowerCase();
     setState(() {
-      _displayed = _all.where((m) => m.name.toLowerCase().contains(qLower)).toList();
+      _displayed =
+          _all.where((m) => m.name.toLowerCase().contains(qLower)).toList();
     });
   }
 
@@ -51,12 +72,12 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     setState(() => _isSearchingRemote = true);
     try {
       final results = await api.searchMeals(q);
-      // best-effort: show search results (search endpoint is global)
       setState(() {
         _displayed = results;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Search error: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Search error: $e')));
     } finally {
       setState(() => _isSearchingRemote = false);
     }
@@ -90,6 +111,11 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
               builder: (_) => MealDetailScreen(mealId: meal.id),
             ));
           },
+          onFavoriteToggle: () {
+            setState(() {
+              meal.isFavorite = !meal.isFavorite;
+            });
+          },
         );
       },
     );
@@ -100,6 +126,20 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.categoryName),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            tooltip: 'Омилени',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FavoritesPage(allMeals: _all),
+                ),
+              );
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
@@ -118,7 +158,9 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0)
+                ),
               ),
             ),
           ),
