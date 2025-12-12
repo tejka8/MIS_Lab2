@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => FavoritesPage(allMeals: []), // стави ја листата со рецепти тука
+                  builder: (_) => FavoritesPage(allMeals: []),
                 ),
               );
             },

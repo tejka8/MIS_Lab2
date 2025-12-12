@@ -3,14 +3,14 @@ class Category {
   final String name;
   final String description;
   final String thumb;
-  bool isFavorite; // <-- додај го ова
+  bool isFavorite;
 
   Category({
     required this.id,
     required this.name,
     required this.description,
     required this.thumb,
-    this.isFavorite = false, // default е false
+    this.isFavorite = false,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) {

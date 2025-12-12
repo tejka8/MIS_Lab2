@@ -9,7 +9,7 @@ class MealSummary {
     required this.id,
     required this.name,
     required this.thumb,
-    this.isFavorite = false, // подразбирано не е омилен
+    this.isFavorite = false,
   });
 
   factory MealSummary.fromJson(Map<String, dynamic> json) {

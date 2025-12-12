@@ -28,7 +28,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         : api.lookupMeal(widget.mealId);
   }
 
-  // Функција за отворање YouTube линк
   Future<void> _openYoutube(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -58,7 +57,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Слика со CachedNetworkImage
                 CachedNetworkImage(
                   imageUrl: meal.thumb,
                   height: 220,
